@@ -20,7 +20,7 @@ public class AnswerTest {
     }
 
     @Test
-    @DisplayName("삭제 명령시 상태가 변경")
+    @DisplayName("삭제 명령시 상태 변경")
     void deleteBy() {
         // when
         boolean beforeDelete = A1.isDeleted();
