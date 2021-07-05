@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import qna.NotFoundException;
 
 @DataJpaTest
 class AnswerRepositoryTest {
@@ -51,5 +52,21 @@ class AnswerRepositoryTest {
         assertThat(savedAnswer).isSameAs(answer);
         assertThat(savedAnswer.getCreatedAt()).isAfter(beforeTime);
         assertThat(savedAnswer.isNotOwner(writer)).isFalse();
+    }
+
+    @Test
+    @DisplayName("답변글 삭제시 delete 상태 반영")
+    void update() {
+        // given
+        Answer answer = new Answer(writer, question, "자문자답합니다.");
+        Answer savedAnswer = answers.save(answer);
+
+        // when
+        answer.delete();
+        Answer foundAnswer = answers.findById(savedAnswer.getId())
+            .orElseThrow(NotFoundException::new);
+
+        // then
+        assertThat(foundAnswer.isDeleted()).isTrue();
     }
 }

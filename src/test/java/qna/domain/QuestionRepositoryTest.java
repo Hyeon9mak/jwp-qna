@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import qna.CannotDeleteException;
+import qna.NotFoundException;
 
 @DataJpaTest
 class QuestionRepositoryTest {
@@ -28,8 +30,8 @@ class QuestionRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        users.deleteAll();
         questions.deleteAll();
+        users.deleteAll();
     }
 
     @Test
@@ -48,5 +50,21 @@ class QuestionRepositoryTest {
         assertThat(savedQuestion.getCreatedAt()).isAfter(beforeTime);
         assertThat(savedQuestion.isDeleted()).isFalse();
         assertThat(savedQuestion.getWriter()).isSameAs(writer);
+    }
+
+    @Test
+    @DisplayName("질문글 삭제시 delete 상태 반영")
+    void update() throws CannotDeleteException {
+        // given
+        Question question = new Question("여기가 어디죠?", "여기가 어딘가요?").writeBy(writer);
+        Question savedQuestion = questions.save(question);
+
+        // when
+        question.deleteBy(writer);
+        Question foundQuestion = questions.findById(savedQuestion.getId())
+            .orElseThrow(NotFoundException::new);
+
+        // then
+        assertThat(foundQuestion.isDeleted()).isTrue();
     }
 }
