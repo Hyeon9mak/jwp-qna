@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,21 @@ class AnswerRepositoryTest {
     @Autowired
     private AnswerRepository answers;
 
+    @Autowired
+    private QuestionRepository questions;
+
+    @Autowired
+    private UserRepository users;
+
+    private User writer;
+    private Question question;
+
+    @BeforeEach
+    void setUp() {
+        writer = users.save(new User("hyeon9mak", "1234", "최현구", "hyeon9mak@email.com"));
+        question = questions.save(new Question("여기가 어디죠?", "여기가 어딘가요?").writeBy(writer));
+    }
+
     @AfterEach
     void tearDown() {
         answers.deleteAll();
@@ -25,7 +41,7 @@ class AnswerRepositoryTest {
     void create() {
         // given
         LocalDateTime beforeTime = LocalDateTime.now();
-        Answer answer = new Answer(UserTest.JAVAJIGI, QuestionTest.Q1, "나는 댕댕박사라네.");
+        Answer answer = new Answer(writer, question, "자문자답합니다.");
 
         // when
         Answer savedAnswer = answers.save(answer);
@@ -34,6 +50,6 @@ class AnswerRepositoryTest {
         assertThat(savedAnswer.getId()).isNotNull();
         assertThat(savedAnswer).isSameAs(answer);
         assertThat(savedAnswer.getCreatedAt()).isAfter(beforeTime);
-        assertThat(savedAnswer.isOwner(UserTest.JAVAJIGI)).isTrue();
+        assertThat(savedAnswer.isOwner(writer)).isTrue();
     }
 }
