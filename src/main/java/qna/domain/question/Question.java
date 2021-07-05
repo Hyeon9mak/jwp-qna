@@ -1,4 +1,4 @@
-package qna.domain;
+package qna.domain.question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import qna.CannotDeleteException;
-import qna.NotDeletedException;
+import qna.domain.BaseEntity;
+import qna.domain.ContentType;
+import qna.domain.answer.Answer;
+import qna.domain.deletehistory.DeleteHistory;
+import qna.domain.user.User;
+import qna.exception.CannotDeleteException;
+import qna.exception.NotDeletedException;
 
 @Entity
 public class Question extends BaseEntity {

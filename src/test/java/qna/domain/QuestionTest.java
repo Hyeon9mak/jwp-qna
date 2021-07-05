@@ -7,8 +7,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import qna.CannotDeleteException;
-import qna.NotDeletedException;
+import qna.domain.answer.Answer;
+import qna.domain.deletehistory.DeleteHistory;
+import qna.domain.question.Question;
+import qna.exception.CannotDeleteException;
+import qna.exception.NotDeletedException;
 
 public class QuestionTest {
 

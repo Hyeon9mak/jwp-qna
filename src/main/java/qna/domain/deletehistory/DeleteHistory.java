@@ -1,4 +1,4 @@
-package qna.domain;
+package qna.domain.deletehistory;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import qna.domain.ContentType;
+import qna.domain.user.User;
 
 @Entity
 public class DeleteHistory {

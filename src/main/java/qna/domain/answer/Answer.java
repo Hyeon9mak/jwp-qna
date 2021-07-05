@@ -1,4 +1,4 @@
-package qna.domain;
+package qna.domain.answer;
 
 import java.util.Objects;
 import javax.persistence.Column;
@@ -7,9 +7,14 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import qna.NotDeletedException;
-import qna.NotFoundException;
-import qna.UnAuthorizedException;
+import qna.domain.BaseEntity;
+import qna.domain.ContentType;
+import qna.domain.deletehistory.DeleteHistory;
+import qna.domain.question.Question;
+import qna.domain.user.User;
+import qna.exception.NotDeletedException;
+import qna.exception.NotFoundException;
+import qna.exception.UnAuthorizedException;
 
 @Entity
 public class Answer extends BaseEntity {

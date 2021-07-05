@@ -1,4 +1,4 @@
-package qna.domain;
+package qna.domain.answer;
 
 import java.util.List;
 import java.util.Optional;
