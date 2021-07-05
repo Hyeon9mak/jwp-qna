@@ -1,18 +1,29 @@
 package qna.domain;
 
-public class Question {
-    private Long id;
-    private String title;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+
+@Entity
+public class Question extends BaseEntity {
+
+    @Lob
     private String contents;
-    private Long writerId;
+    @Column(nullable = false)
     private boolean deleted = false;
+    @Column(length = 100, nullable = false)
+    private String title;
+    private Long writerId;
+
+    protected Question() {
+    }
 
     public Question(String title, String contents) {
         this(null, title, contents);
     }
 
     public Question(Long id, String title, String contents) {
-        this.id = id;
+        super(id);
         this.title = title;
         this.contents = contents;
     }
@@ -31,35 +42,19 @@ public class Question {
     }
 
     public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        return super.getId();
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getContents() {
         return contents;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
     public Long getWriterId() {
         return writerId;
-    }
-
-    public void setWriterId(Long writerId) {
-        this.writerId = writerId;
     }
 
     public boolean isDeleted() {
@@ -68,16 +63,5 @@ public class Question {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", contents='" + contents + '\'' +
-                ", writerId=" + writerId +
-                ", deleted=" + deleted +
-                '}';
     }
 }
