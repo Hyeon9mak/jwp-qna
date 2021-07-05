@@ -50,12 +50,16 @@ public class Answer extends BaseEntity {
     protected Answer() {
     }
 
-    public boolean isOwner(User writer) {
-        return this.writer.equals(writer);
+    public boolean isNotOwner(User writer) {
+        return !writer.equalsNameAndEmail(this.writer);
     }
 
     public void toQuestion(Question question) {
         this.question = question;
+    }
+
+    public DeleteHistory deleteHistory() {
+        return new DeleteHistory(ContentType.ANSWER, super.getId(), writer);
     }
 
     public User getWriter() {
@@ -74,7 +78,7 @@ public class Answer extends BaseEntity {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void delete() {
+        this.deleted = true;
     }
 }

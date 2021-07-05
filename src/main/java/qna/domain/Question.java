@@ -2,6 +2,7 @@ package qna.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -9,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import qna.CannotDeleteException;
 
 @Entity
 public class Question extends BaseEntity {
@@ -27,7 +29,7 @@ public class Question extends BaseEntity {
     private User writer;
 
     @OneToMany(mappedBy = "question")
-    private List<Answer> answers = new ArrayList<>();
+    private final List<Answer> answers = new ArrayList<>();
 
     protected Question() {
     }
@@ -47,12 +49,49 @@ public class Question extends BaseEntity {
         return this;
     }
 
-    public boolean isOwner(User writer) {
-        return this.writer.equals(writer);
+    public void deleteBy(User loginUser) throws CannotDeleteException {
+        validateQuestionOwner(loginUser);
+        validateAnswersOwner(loginUser);
+        this.deleted = true;
+        answers.forEach(Answer::delete);
+    }
+
+    public List<DeleteHistory> deleteHistories() {
+        List<DeleteHistory> deleteHistories = deleteAnswerHistories();
+        deleteHistories.add(new DeleteHistory(ContentType.QUESTION, super.getId(), writer));
+        return deleteHistories;
+    }
+
+    public List<DeleteHistory> deleteAnswerHistories() {
+        return answers.stream()
+            .map(Answer::deleteHistory)
+            .collect(Collectors.toList());
+    }
+
+    private void validateQuestionOwner(User loginUser) throws CannotDeleteException {
+        if (isNotOwner(loginUser)) {
+            throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
+        }
+    }
+
+    private void validateAnswersOwner(User loginUser) throws CannotDeleteException {
+        if (isAnswersWrittenByOthers(loginUser)) {
+            throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
+        }
+    }
+
+    private boolean isAnswersWrittenByOthers(User loginUser) {
+        return answers.stream()
+            .anyMatch(answer -> answer.isNotOwner(loginUser));
+    }
+
+    public boolean isNotOwner(User writer) {
+        return !this.writer.equals(writer);
     }
 
     public void addAnswer(Answer answer) {
         answer.toQuestion(this);
+        answers.add(answer);
     }
 
     public Long getId() {
@@ -73,9 +112,5 @@ public class Question extends BaseEntity {
 
     public boolean isDeleted() {
         return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 }

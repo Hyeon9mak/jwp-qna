@@ -50,6 +50,6 @@ class AnswerRepositoryTest {
         assertThat(savedAnswer.getId()).isNotNull();
         assertThat(savedAnswer).isSameAs(answer);
         assertThat(savedAnswer.getCreatedAt()).isAfter(beforeTime);
-        assertThat(savedAnswer.isOwner(writer)).isTrue();
+        assertThat(savedAnswer.isNotOwner(writer)).isFalse();
     }
 }
