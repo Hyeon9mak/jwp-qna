@@ -52,7 +52,7 @@ public class Answer extends BaseEntity {
     }
 
     public boolean isNotOwner(User writer) {
-        return !writer.equalsNameAndEmail(this.writer);
+        return !writer.equals(this.writer);
     }
 
     public void toQuestion(Question question) {
