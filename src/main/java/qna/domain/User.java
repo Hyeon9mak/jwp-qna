@@ -64,10 +64,6 @@ public class User extends BaseEntity {
             email.equals(target.email);
     }
 
-    public boolean isGuestUser() {
-        return false;
-    }
-
     public Long getId() {
         return super.getId();
     }
@@ -78,6 +74,10 @@ public class User extends BaseEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean isGuestUser() {
+        return false;
     }
 
     private static class GuestUser extends User {
