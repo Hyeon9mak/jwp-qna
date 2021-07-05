@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import qna.CannotDeleteException;
+import qna.NotDeletedException;
 
 @Entity
 public class Question extends BaseEntity {
@@ -57,9 +58,13 @@ public class Question extends BaseEntity {
     }
 
     public List<DeleteHistory> deleteHistories() {
-        List<DeleteHistory> deleteHistories = deleteAnswerHistories();
-        deleteHistories.add(new DeleteHistory(ContentType.QUESTION, super.getId(), writer));
-        return deleteHistories;
+        if (isDeleted()) {
+            List<DeleteHistory> deleteHistories = deleteAnswerHistories();
+            deleteHistories.add(new DeleteHistory(ContentType.QUESTION, super.getId(), writer));
+            return deleteHistories;
+        }
+
+        throw new NotDeletedException("삭제 되지 않은 질문 입니다.");
     }
 
     public List<DeleteHistory> deleteAnswerHistories() {
@@ -96,14 +101,6 @@ public class Question extends BaseEntity {
 
     public Long getId() {
         return super.getId();
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContents() {
-        return contents;
     }
 
     public User getWriter() {

@@ -7,6 +7,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import qna.NotDeletedException;
 import qna.NotFoundException;
 import qna.UnAuthorizedException;
 
@@ -59,19 +60,14 @@ public class Answer extends BaseEntity {
     }
 
     public DeleteHistory deleteHistory() {
-        return new DeleteHistory(ContentType.ANSWER, super.getId(), writer);
+        if (isDeleted()) {
+            return new DeleteHistory(ContentType.ANSWER, super.getId(), writer);
+        }
+        throw new NotDeletedException("삭제 되지 않은 답변 입니다.");
     }
 
     public User getWriter() {
         return writer;
-    }
-
-    public Question getQuestion() {
-        return question;
-    }
-
-    public String getContents() {
-        return contents;
     }
 
     public boolean isDeleted() {
