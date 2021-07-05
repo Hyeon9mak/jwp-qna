@@ -2,6 +2,7 @@ package qna.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class UserRepositoryTest {
     private UserRepository users;
 
     @AfterEach
-    public void clear() {
+    void tearDown() {
         users.deleteAll();
     }
 
@@ -24,6 +25,7 @@ class UserRepositoryTest {
     @DisplayName("유저 생성")
     void create() {
         // given
+        LocalDateTime beforeTime = LocalDateTime.now();
         User user = new User("hyeon9mak", "1234", "hyeon-gu", "hyeon9mak@email.com");
 
         // when
@@ -32,6 +34,7 @@ class UserRepositoryTest {
         // then
         assertThat(savedUser.getId()).isNotNull();
         assertThat(savedUser).isSameAs(user);
+        assertThat(savedUser.getCreatedAt()).isAfter(beforeTime);
     }
 
     @Test
