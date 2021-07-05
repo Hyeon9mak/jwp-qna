@@ -67,7 +67,11 @@ public class Question extends BaseEntity {
         throw new NotDeletedException("삭제 되지 않은 질문 입니다.");
     }
 
-    public List<DeleteHistory> deleteAnswerHistories() {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    private List<DeleteHistory> deleteAnswerHistories() {
         return answers.stream()
             .map(Answer::deleteHistory)
             .collect(Collectors.toList());
@@ -105,9 +109,5 @@ public class Question extends BaseEntity {
 
     public User getWriter() {
         return writer;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
     }
 }
